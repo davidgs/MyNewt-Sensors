@@ -7,9 +7,9 @@
 //
 
 import XCTest
-@testable import MyNewt_Sensors
+@testable import MyNewt
 
-class MyNewt_SensorsTests: XCTestCase {
+class MyNewtTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
