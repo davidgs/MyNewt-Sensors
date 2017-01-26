@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		681D5DE21E082C4A00F33CF1 /* ScanViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 681D5DE01E082C4A00F33CF1 /* ScanViewController.xib */; };
+		681D5DE61E08394700F33CF1 /* DeviceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681D5DE51E08394700F33CF1 /* DeviceCell.swift */; };
+		681D5DE81E083A5900F33CF1 /* ScanController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681D5DE71E083A5900F33CF1 /* ScanController.swift */; };
 		683AE3761E009BD200D2A793 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 683AE3751E009BD200D2A793 /* AppDelegate.swift */; };
 		683AE3781E009BD200D2A793 /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 683AE3771E009BD200D2A793 /* FirstViewController.swift */; };
 		683AE37A1E009BD200D2A793 /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 683AE3791E009BD200D2A793 /* SecondViewController.swift */; };
@@ -18,6 +21,7 @@
 		683AE3A61E00A07300D2A793 /* MyNewtSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 683AE3A51E00A07300D2A793 /* MyNewtSensor.swift */; };
 		683AE3A81E00A42B00D2A793 /* MyNewtDev.swift in Sources */ = {isa = PBXBuildFile; fileRef = 683AE3A71E00A42B00D2A793 /* MyNewtDev.swift */; };
 		683AE3AA1E00A61900D2A793 /* myNewtCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 683AE3A91E00A61900D2A793 /* myNewtCell.swift */; };
+		68B2B8C71E3A638D00D5D74C /* SignalButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B2B8C61E3A638D00D5D74C /* SignalButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,6 +42,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		681D5DE01E082C4A00F33CF1 /* ScanViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ScanViewController.xib; sourceTree = "<group>"; };
+		681D5DE51E08394700F33CF1 /* DeviceCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceCell.swift; sourceTree = "<group>"; };
+		681D5DE71E083A5900F33CF1 /* ScanController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanController.swift; sourceTree = "<group>"; };
 		683AE3721E009BD200D2A793 /* MyNewt.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyNewt.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		683AE3751E009BD200D2A793 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		683AE3771E009BD200D2A793 /* FirstViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstViewController.swift; sourceTree = "<group>"; };
@@ -55,6 +62,8 @@
 		683AE3A51E00A07300D2A793 /* MyNewtSensor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyNewtSensor.swift; sourceTree = "<group>"; };
 		683AE3A71E00A42B00D2A793 /* MyNewtDev.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyNewtDev.swift; sourceTree = "<group>"; };
 		683AE3A91E00A61900D2A793 /* myNewtCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = myNewtCell.swift; sourceTree = "<group>"; };
+		68AA8CCC1E2E93760056E139 /* CorePlot.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = CorePlot.xcconfig; path = "../core-plot/framework/xcconfig/CorePlot.xcconfig"; sourceTree = "<group>"; };
+		68B2B8C61E3A638D00D5D74C /* SignalButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignalButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,6 +98,7 @@
 				683AE38B1E009BD200D2A793 /* MyNewt SensorsTests */,
 				683AE3961E009BD200D2A793 /* MyNewt SensorsUITests */,
 				683AE3731E009BD200D2A793 /* Products */,
+				68AA8CCB1E2E93760056E139 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -109,7 +119,11 @@
 				683AE3771E009BD200D2A793 /* FirstViewController.swift */,
 				683AE3791E009BD200D2A793 /* SecondViewController.swift */,
 				683AE37B1E009BD200D2A793 /* Main.storyboard */,
+				68B2B8C61E3A638D00D5D74C /* SignalButton.swift */,
+				681D5DE71E083A5900F33CF1 /* ScanController.swift */,
+				681D5DE01E082C4A00F33CF1 /* ScanViewController.xib */,
 				683AE3A91E00A61900D2A793 /* myNewtCell.swift */,
+				681D5DE51E08394700F33CF1 /* DeviceCell.swift */,
 				683AE3A71E00A42B00D2A793 /* MyNewtDev.swift */,
 				683AE3A51E00A07300D2A793 /* MyNewtSensor.swift */,
 				683AE37E1E009BD200D2A793 /* Assets.xcassets */,
@@ -135,6 +149,14 @@
 				683AE3991E009BD200D2A793 /* Info.plist */,
 			);
 			path = "MyNewt SensorsUITests";
+			sourceTree = "<group>";
+		};
+		68AA8CCB1E2E93760056E139 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				68AA8CCC1E2E93760056E139 /* CorePlot.xcconfig */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -249,6 +271,7 @@
 			files = (
 				683AE3821E009BD200D2A793 /* LaunchScreen.storyboard in Resources */,
 				683AE37F1E009BD200D2A793 /* Assets.xcassets in Resources */,
+				681D5DE21E082C4A00F33CF1 /* ScanViewController.xib in Resources */,
 				683AE37D1E009BD200D2A793 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -275,7 +298,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				683AE37A1E009BD200D2A793 /* SecondViewController.swift in Sources */,
+				68B2B8C71E3A638D00D5D74C /* SignalButton.swift in Sources */,
+				681D5DE81E083A5900F33CF1 /* ScanController.swift in Sources */,
 				683AE3761E009BD200D2A793 /* AppDelegate.swift in Sources */,
+				681D5DE61E08394700F33CF1 /* DeviceCell.swift in Sources */,
 				683AE3A81E00A42B00D2A793 /* MyNewtDev.swift in Sources */,
 				683AE3781E009BD200D2A793 /* FirstViewController.swift in Sources */,
 				683AE3A61E00A07300D2A793 /* MyNewtSensor.swift in Sources */,
@@ -440,7 +466,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.dragonfly.MyNewt-Sensors";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -455,7 +481,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.dragonfly.MyNewt-Sensors";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -536,6 +562,7 @@
 				683AE39E1E009BD200D2A793 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		683AE39F1E009BD200D2A793 /* Build configuration list for PBXNativeTarget "MyNewtTests" */ = {
 			isa = XCConfigurationList;
@@ -544,6 +571,7 @@
 				683AE3A11E009BD200D2A793 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		683AE3A21E009BD200D2A793 /* Build configuration list for PBXNativeTarget "MyNewtUITests" */ = {
 			isa = XCConfigurationList;
@@ -552,6 +580,7 @@
 				683AE3A41E009BD200D2A793 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

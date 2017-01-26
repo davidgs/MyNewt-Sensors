@@ -9,7 +9,7 @@
 import UIKit
 import CoreBluetooth
 
-let myDev : MyNewtDev = MyNewtDev()
+var myNewt : MyNewtDev = MyNewtDev()
 
 class FirstViewController: UIViewController , CBCentralManagerDelegate, CBPeripheralDelegate, UITableViewDataSource, UITableViewDelegate {
     
@@ -17,9 +17,9 @@ class FirstViewController: UIViewController , CBCentralManagerDelegate, CBPeriph
     @IBOutlet weak var scanActivity: UIActivityIndicatorView!
     @IBOutlet weak var statusLabel: UILabel!
     @IBOutlet weak var deviceNameLabel: UILabel!
-    @IBOutlet weak var signalStrength: UIImageView!
     @IBOutlet weak var connectButton: UIButton!
     @IBOutlet weak var myNewtView: UIView!
+    @IBOutlet weak var rssiButton: SignalButton!
     
     // BLE
     var centralManager : CBCentralManager!
@@ -35,32 +35,39 @@ class FirstViewController: UIViewController , CBCentralManagerDelegate, CBPeriph
     
     var  isScanning : Bool = false
     var isConnected  : Bool = false
-    
+    var showRSSIVal : Bool = false
+    let prefs = UserDefaults.standard
+    var myTimer : Timer!
+
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         centralManager = CBCentralManager(delegate: self, queue: nil)
+        self.tabBarController?.delegate = UIApplication.shared.delegate as? UITabBarControllerDelegate
+
                
+    }
+    @IBAction func rssiButtonClick(_ sender: Any) {
+        showRSSIVal = !showRSSIVal
+        if(showRSSIVal){
+            let newSensor = MyNewtSensor(sensorName: "RSSI Signal Strength", nUUID : "RSSI", dUUID : "dRSSI", sensorValue : -00)
+            myNewtSensors.insert(newSensor, at: 0)
+        } else {
+            myNewtSensors.remove(at: 0)
+        }
+
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        if(myNewtPeripheral.state == CBPeripheralState.connected){
-            centralManager.cancelPeripheralConnection(myNewtPeripheral)
-            self.signalStrength.image = UIImage(named: "NoSignal-sm")
-            self.connectButton.setTitle("Scan For MyNewt", for: UIControlState.normal)
-            self.isConnected = false
-            self.isScanning = false
-            self.deviceNameLabel.text = "None"
-            self.myNewtSensors = []
-            self.tearDownSensorTagTableView()
-        }
+        myNewt.savePrefs()
+        suspendSensor()
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        setupSensorTagTableView()
-        self.scanActivity.startAnimating()
+        myNewt.loadPrefs()
+        suspendSensor()
 
     }
     override func didReceiveMemoryWarning() {
@@ -69,22 +76,30 @@ class FirstViewController: UIViewController , CBCentralManagerDelegate, CBPeriph
     }
 
     @IBAction func connectButtonPressed(_ sender: Any) {
-        if(myNewtPeripheral.state == CBPeripheralState.connected){
+        if(myNewtPeripheral != nil && myNewtPeripheral.state == CBPeripheralState.connected){
             centralManager.cancelPeripheralConnection(myNewtPeripheral)
-            self.signalStrength.image = UIImage(named: "NoSignal-sm")
+            rssiButton.setImage(UIImage(named: "NoSignal-sm"), for: UIControlState.normal)
             self.connectButton.setTitle("Scan For MyNewt", for: UIControlState.normal)
             self.isConnected = false
             self.isScanning = false
             self.deviceNameLabel.text = "None"
             self.myNewtSensors = []
             self.tearDownSensorTagTableView()
+            self.statusLabel.text = "Not Connected"
+            if(myTimer != nil && myTimer.isValid){
+                myTimer.invalidate()
+            }
         } else if(self.isScanning){
             centralManager.stopScan()
             self.scanActivity.stopAnimating()
-            self.signalStrength.image = UIImage(named: "NoSignal-sm")
+            rssiButton.setImage(UIImage(named: "NoSignal-sm"), for: UIControlState.normal)
             self.connectButton.setTitle("Scan For MyNewt", for: UIControlState.normal)
             self.isConnected = false
             self.isScanning = false
+            self.statusLabel.text = "Not Connected"
+            if(myTimer != nil && myTimer.isValid){
+                myTimer.invalidate()
+            }
         }else {
             // start scanning
             self.setupSensorTagTableView()
@@ -92,11 +107,54 @@ class FirstViewController: UIViewController , CBCentralManagerDelegate, CBPeriph
             self.centralManager.scanForPeripherals(withServices: nil, options: nil)
             self.connectButton.setTitle("Stop Scan", for: UIControlState.normal)
             self.isScanning = true
-            
+            self.statusLabel.text = "Scanning ..."
+
         }
 
     }
 
+    func suspendSensor(){
+        if(myNewtPeripheral != nil && myNewtPeripheral.state == CBPeripheralState.connected){
+            centralManager.cancelPeripheralConnection(myNewtPeripheral)
+            rssiButton.setImage(UIImage(named: "NoSignal-sm"), for: UIControlState.normal)
+            self.connectButton.setTitle("Scan For MyNewt", for: UIControlState.normal)
+            self.isConnected = false
+            self.isScanning = false
+            self.deviceNameLabel.text = "None"
+            self.myNewtSensors = []
+            self.tearDownSensorTagTableView()
+            if(myTimer != nil && myTimer.isValid){
+                myTimer.invalidate()
+            }
+        } else if(self.isScanning){
+            centralManager.stopScan()
+            self.scanActivity.stopAnimating()
+            rssiButton.setImage(UIImage(named: "NoSignal-sm"), for: UIControlState.normal)
+            self.connectButton.setTitle("Scan For MyNewt", for: UIControlState.normal)
+            self.isConnected = false
+            self.isScanning = false
+            self.deviceNameLabel.text = "None"
+            if(myTimer != nil && myTimer.isValid){
+                myTimer.invalidate()
+            }
+
+        } else {
+            // start scanning
+            self.setupSensorTagTableView()
+            self.scanActivity.startAnimating()
+            self.centralManager.scanForPeripherals(withServices: nil, options: nil)
+            self.connectButton.setTitle("Stop Scan", for: UIControlState.normal)
+            self.isScanning = true
+            if(showRSSIVal){
+                let newSensor = MyNewtSensor(sensorName: "RSSI Signal Strength", nUUID : "RSSI", dUUID : "dRSSI", sensorValue : -00)
+                myNewtSensors.append(newSensor)
+            }
+
+        }
+    }
+    
+   
+    
     
     /******* CBCentralManagerDelegate *******/
     
@@ -114,7 +172,7 @@ class FirstViewController: UIViewController , CBCentralManagerDelegate, CBPeriph
     }
     
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
-        if myDev.MyNewtDevFound(advertisementData: advertisementData as [NSObject : AnyObject]!) == true {
+        if myNewt.MyNewtDevFound(advertisementData: advertisementData as [NSObject : AnyObject]!) == true {
             // Update Status Label
             self.statusLabel.text = "Mynewt Device Found"
             self.scanActivity.stopAnimating()
@@ -124,6 +182,8 @@ class FirstViewController: UIViewController , CBCentralManagerDelegate, CBPeriph
             self.myNewtPeripheral = peripheral
             self.myNewtPeripheral.delegate = self
             self.centralManager.connect(peripheral, options: nil)
+            let interval = Double.init(prefs.integer(forKey: "rssiUpdate"))
+            myTimer = Timer.scheduledTimer(timeInterval: interval, target: self, selector: #selector(readRSSI), userInfo: nil, repeats: true)
         }
         else {
             //self.statusLabel.text = "Mynewt Device NOT Found"
@@ -133,7 +193,7 @@ class FirstViewController: UIViewController , CBCentralManagerDelegate, CBPeriph
     }
     // Check out the discovered peripherals to find a MyNewt Device
     func centralManager(central: CBCentralManager, didDiscoverPeripheral peripheral: CBPeripheral, advertisementData: [String : AnyObject], RSSI: NSNumber) {
-        if myDev.MyNewtDevFound(advertisementData: advertisementData as [NSObject : AnyObject]!) == true {
+        if myNewt.MyNewtDevFound(advertisementData: advertisementData as [NSObject : AnyObject]!) == true {
             // Update Status Label
             self.statusLabel.text = "Mynewt Device Found"
             self.scanActivity.stopAnimating()
@@ -143,6 +203,9 @@ class FirstViewController: UIViewController , CBCentralManagerDelegate, CBPeriph
             self.myNewtPeripheral = peripheral
             self.myNewtPeripheral.delegate = self
             self.centralManager.connect(peripheral, options: nil)
+            let interval = Double.init(prefs.integer(forKey: "rssiUpdate"))
+            myTimer = Timer.scheduledTimer(timeInterval: interval, target: self, selector: #selector(readRSSI), userInfo: nil, repeats: true)
+
         }
         else {
             //self.statusLabel.text = "Mynewt Device NOT Found"
@@ -159,7 +222,7 @@ class FirstViewController: UIViewController , CBCentralManagerDelegate, CBPeriph
     
     // If disconnected, start searching again
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
-        self.statusLabel.text = "Disconnected"
+        self.statusLabel.text = "Not Connected"
         self.isConnected = false
         
     }
@@ -170,7 +233,7 @@ class FirstViewController: UIViewController , CBCentralManagerDelegate, CBPeriph
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
         for service in peripheral.services! {
             let thisService = service as CBService
-            if myDev.validService(service: thisService) {
+            if myNewt.validService(service: thisService) {
                 // Discover characteristics of all valid services
                 peripheral.discoverCharacteristics(nil, for: thisService)
             }
@@ -185,15 +248,15 @@ class FirstViewController: UIViewController , CBCentralManagerDelegate, CBPeriph
         
         for charateristic in service.characteristics! {
             let thisCharacteristic = charateristic as CBCharacteristic
-            if(myDev.getSubAll()){
-                if(myDev.isNotifyCharacteristic(characteristic: thisCharacteristic)){
+            if(myNewt.getSubAll()){
+                if(myNewt.isNotifyCharacteristic(characteristic: thisCharacteristic)){
                     self.myNewtPeripheral.setNotifyValue(true, for: thisCharacteristic)
                 }
             } else {
-                if myDev.validDataCharacteristic(characteristic: thisCharacteristic) {
+                if myNewt.validDataCharacteristic(characteristic: thisCharacteristic) {
                     self.myNewtPeripheral.setNotifyValue(true, for: thisCharacteristic)
                 }
-                if myDev.validConfigCharacteristic(characteristic: thisCharacteristic) {
+                if myNewt.validConfigCharacteristic(characteristic: thisCharacteristic) {
                     peripheral.readValue(for: thisCharacteristic)
                 }
             }
@@ -211,15 +274,13 @@ class FirstViewController: UIViewController , CBCentralManagerDelegate, CBPeriph
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         
         self.statusLabel.text = "Connected"
-        self.deviceNameLabel.text = myDev.getDeviceString()
+        self.deviceNameLabel.text = myNewt.getDeviceString()
         
-        peripheral.readRSSI()
         let charType = characteristic.uuid.uuidString.substring(to: characteristic.uuid.uuidString.index(characteristic.uuid.uuidString.startIndex, offsetBy: 2))
         
         let charVal = characteristic.uuid.uuidString.substring(from: characteristic.uuid.uuidString.index(characteristic.uuid.uuidString.startIndex, offsetBy: 2))
         let uuid = characteristic.uuid.uuidString
         var seen : Bool = false
-        // self.readRSSI()
         for i in 0..<myNewtSensors.count {
             if(myNewtSensors[i].containsValue(value: uuid)) {
                 seen = true
@@ -229,7 +290,7 @@ class FirstViewController: UIViewController , CBCentralManagerDelegate, CBPeriph
         }
         if(!seen){
             // never seen this before
-            if(myDev.getSubAll()){
+            if(myNewt.getSubAll()){
                 let newSensor = MyNewtSensor(sensorName: "Sensor Data UUID: 0x\(characteristic.uuid.uuidString)", nUUID : characteristic.uuid.uuidString, dUUID : characteristic.uuid.uuidString, sensorValue : 0.00)
                 myNewtSensors.append(newSensor)
             } else {
@@ -251,26 +312,30 @@ class FirstViewController: UIViewController , CBCentralManagerDelegate, CBPeriph
     func peripheralDidUpdateRSSI(_ peripheral: CBPeripheral, error: Error?) {
         let rssi = abs((peripheral.rssi?.intValue)! )
         print("RSSI: \(peripheral.rssi?.intValue)")
-        if(rssi < 70){
-            self.signalStrength.image = UIImage(named: "FourBars-sm")!
-        } else if (rssi < 80) {
-            self.signalStrength.image = UIImage(named: "ThreeBars-sm")!
-        } else if (rssi < 90) {
-            self.signalStrength.image = UIImage(named: "TwoBars-sm")!
-        } else if(rssi < 100) {
-            self.signalStrength.image = UIImage(named: "OneBar-sm")!
-        } else {
-            self.signalStrength.image = UIImage(named: "NoSignal-sm")!
+        self.rssiButton.updateSignal(strength: rssi)
+        if(showRSSIVal){
+            myNewtSensors[0].setValue(peripheral.rssi, forKey: "sensorValue")
         }
-        
+    }
+    
+    func savePrefs(){
+        myNewt.savePrefs()
     }
     
     
+    func loadPrefs(){
+        myNewt.loadPrefs()
+    }
     
-    
-    
-    
-    
+    func readRSSI() {
+        if (myNewtPeripheral != nil) {
+            myNewtPeripheral.delegate = self
+            //  print("RSSI Request - \(self.myNewtPeripheral.name!)")
+            myNewtPeripheral.readRSSI()
+        } else {
+            print("peripheral = nil")
+        }
+    }
     /******* Helper *******/
     
     // Show alert

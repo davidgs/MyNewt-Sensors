@@ -24,7 +24,15 @@ class MyNewtDev {
     private var dataPrefix = "BE"
 
     private var deviceString = ""
+    private var rssiUpdate : Int = 1
     
+    init(){
+        loadPrefs()
+    }
+    
+    init(reset: Bool){
+        
+    }
  // Check name of device from advertisement data
     func MyNewtDevFound (advertisementData: [NSObject : AnyObject]!) -> Bool {
         let nameOfDeviceFound = (advertisementData as NSDictionary).object(forKey: CBAdvertisementDataLocalNameKey) as? NSString
@@ -95,6 +103,14 @@ class MyNewtDev {
         }
     }
     
+    func setRSSI(val: Int){
+        self.rssiUpdate = val
+    }
+    
+    func getRSSIInterval() -> Int {
+        return self.rssiUpdate
+    }
+    
     func getDeviceName () -> String {
         return self.deviceName
     }
@@ -147,7 +163,53 @@ class MyNewtDev {
         self.subscribeAll = subscribe
     }
     
+    func savePrefs(){
+        let prefs = UserDefaults.standard
+        prefs.set(getSubAll(), forKey: "subscribeAll")
+        prefs.set(getExactMatch(), forKey: "exactMatch")
+        prefs.set(getServiceUUID(), forKey: "serviceUUID")
+        prefs.set(getConfigPrefix(), forKey: "configPrefix")
+        prefs.set(getDataPrefix(), forKey: "dataPrefix")
+        prefs.set(getDeviceName(), forKey: "deviceName")
+        prefs.set(rssiUpdate, forKey: "rssiUpdate")
+
+    }
     
+    func loadPrefs(){
+        //application.keyWindow?.rootViewController?.childViewControllers[1] as! SecondViewController
+        let prefs = UserDefaults.standard
+        if let lastDev = prefs.string(forKey: "deviceName"){
+            print("The user has a defined Device Name: " + lastDev)
+            setDeviceName(name: lastDev)
+            
+        }
+        if let dataPrefix = prefs.string(forKey: "dataPrefix"){
+            setDataPrefix(prefix: dataPrefix)
+            print("Data Prefix: \(dataPrefix)")
+            
+        }
+        if let configPrefix = prefs.string(forKey: "configPrefix"){
+            setConfigPrefix(prefix: configPrefix)
+            print("Config Prefix: \(configPrefix)")
+            
+        }
+        if let serviceUUID = prefs.string(forKey: "serviceUUID"){
+            setServiceUUID(uuid: serviceUUID)
+            print("Service UUID: \(serviceUUID)")
+            
+        }
+        let b = prefs.bool(forKey: "subscribeAll")
+        setSubAll(subscribe: b)
+        print("Subscribe all: \(b)")
+        let c = prefs.bool(forKey: "exactMatch")
+        setExactMatch(match: c)
+        print("exact match: \(c)")
+        let r = prefs.integer(forKey: "rssiUpdate")
+        if(r != nil) {
+            self.rssiUpdate = r
+        }
+        
+    }
     // Process the values from sensor
     
     
