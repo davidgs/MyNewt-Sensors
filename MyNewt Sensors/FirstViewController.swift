@@ -29,7 +29,7 @@ class FirstViewController: UIViewController , CBCentralManagerDelegate, CBPeriph
     var myNewtTableView : UITableView!
     
     // Sensor Values
-    var myNewtSensors : [MyNewtSensor] = []
+    
     
     var objectTemperature : Double!
     
@@ -39,7 +39,8 @@ class FirstViewController: UIViewController , CBCentralManagerDelegate, CBPeriph
     let prefs = UserDefaults.standard
     var myTimer : Timer!
 
-    
+    var myNewtSensors : [MyNewtSensor] = []
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -61,14 +62,22 @@ class FirstViewController: UIViewController , CBCentralManagerDelegate, CBPeriph
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        myNewt.savePrefs()
-        suspendSensor()
+         print("Is Graphing: \(isGraphing)")
+        if(!isGraphing) {
+            myNewt.savePrefs()
+            suspendSensor()
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        myNewt.loadPrefs()
-        suspendSensor()
-
+        print("Is Graphing: \(isGraphing)")
+        if(isGraphing) {
+            isGraphing = false
+        } else {
+            myNewt.loadPrefs()
+            suspendSensor()
+        }
+        print("Is Graphing: \(isGraphing)")
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -83,7 +92,7 @@ class FirstViewController: UIViewController , CBCentralManagerDelegate, CBPeriph
             self.isConnected = false
             self.isScanning = false
             self.deviceNameLabel.text = "None"
-            self.myNewtSensors = []
+            myNewtSensors = []
             self.tearDownSensorTagTableView()
             self.statusLabel.text = "Not Connected"
             if(myTimer != nil && myTimer.isValid){
@@ -121,7 +130,7 @@ class FirstViewController: UIViewController , CBCentralManagerDelegate, CBPeriph
             self.isConnected = false
             self.isScanning = false
             self.deviceNameLabel.text = "None"
-            self.myNewtSensors = []
+            myNewtSensors = []
             self.tearDownSensorTagTableView()
             if(myTimer != nil && myTimer.isValid){
                 myTimer.invalidate()
@@ -284,8 +293,12 @@ class FirstViewController: UIViewController , CBCentralManagerDelegate, CBPeriph
         for i in 0..<myNewtSensors.count {
             if(myNewtSensors[i].containsValue(value: uuid)) {
                 seen = true
-                myNewtSensors[i].updateValue(key: uuid, value: characteristic.value! as NSData)
-                myNewtSensors[i].setValue(MyNewtDev.getDoubleValue(value: characteristic.value! as NSData), forKey: "sensorValue")
+                self.myNewtSensors[i].updateValue(key: uuid, value: characteristic.value! as NSData)
+                self.myNewtSensors[i].setValue(MyNewtDev.getDoubleValue(value: characteristic.value! as NSData), forKey: "sensorValue")
+                if(self.tabBarController?.selectedViewController?.view.isKind(of: GraphView.self))!{
+                    let gv = self.tabBarController?.selectedViewController?.view as! GraphView
+                    gv.addDataPoint(data: Int(MyNewtDev.getDoubleValue(value: characteristic.value! as NSData)), name: myNewtSensors[i].sensorLabel)
+                }
             }
         }
         if(!seen){
@@ -297,11 +310,19 @@ class FirstViewController: UIViewController , CBCentralManagerDelegate, CBPeriph
                 switch charType {
                 case "DE":
                     let newSensor = MyNewtSensor(sensorName: String(data: characteristic.value!, encoding: String.Encoding.utf8)!, nUUID : characteristic.uuid.uuidString, dUUID : "BE" + charVal, sensorValue : 0.00)
-                    myNewtSensors.append(newSensor)
-                    print(myNewtSensors[myNewtSensors.count-1])
+                    self.myNewtSensors.append(newSensor)
+                    print(self.myNewtSensors[myNewtSensors.count-1])
                 default:
                     break
                 }
+            }
+            if(self.tabBarController?.selectedViewController?.view.isKind(of: GraphView.self))!{
+                let gv = self.tabBarController?.selectedViewController?.view as! GraphView
+                let name = myNewtSensors[myNewtSensors.count-1].sensorLabel
+                let val = Int(myNewtSensors[myNewtSensors.count-1].sensorValue)
+                let go = GraphObject(name: name)
+                go.addValue(value: val)
+                gv.addDataSource(source: go)
             }
             
         }
@@ -314,7 +335,13 @@ class FirstViewController: UIViewController , CBCentralManagerDelegate, CBPeriph
         print("RSSI: \(peripheral.rssi?.intValue)")
         self.rssiButton.updateSignal(strength: rssi)
         if(showRSSIVal){
-            myNewtSensors[0].setValue(peripheral.rssi, forKey: "sensorValue")
+            self.myNewtSensors[0].setValue(peripheral.rssi, forKey: "sensorValue")
+            if(self.tabBarController?.selectedViewController?.view.isKind(of: GraphView.self))!{
+                let gv = self.tabBarController?.selectedViewController?.view as! GraphView
+                let name = myNewtSensors[0].sensorLabel
+                let val = 200 - abs(peripheral.rssi as! Int32)
+                gv.addDataPoint(data: Int(val), name: name)
+            }
         }
     }
     

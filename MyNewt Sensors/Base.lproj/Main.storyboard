@@ -314,6 +314,53 @@
             </objects>
             <point key="canvasLocation" x="746.25" y="356.25"/>
         </scene>
+        <!--Graph-->
+        <scene sceneID="ZRa-Xo-dPR">
+            <objects>
+                <viewController storyboardIdentifier="graphViewController" id="oVn-95-0Fr" customClass="GraphViewController" customModule="MyNewt" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="3W6-J7-xuo"/>
+                        <viewControllerLayoutGuide type="bottom" id="mRo-sA-heO"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="SFj-6L-D0K" customClass="GraphView" customModule="MyNewt" customModuleProvider="target">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Max" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5hv-zb-7UT">
+                                <rect key="frame" x="262" y="50" width="32" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="AvenirNextCondensed-DemiBold" family="Avenir Next Condensed" pointSize="14"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Min" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5XZ-8c-boe">
+                                <rect key="frame" x="266" y="402" width="28" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                <fontDescription key="fontDescription" name="AvenirNextCondensed-DemiBold" family="Avenir Next Condensed" pointSize="14"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="color" keyPath="startColor">
+                                <color key="value" red="0.91061013940000002" green="0.71428556889999995" blue="0.61863022899999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="color" keyPath="endColor">
+                                <color key="value" red="0.87843137250000003" green="0.31764705879999999" blue="0.14117647059999999" alpha="1" colorSpace="calibratedRGB"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
+                        <connections>
+                            <outlet property="maxLabel" destination="5hv-zb-7UT" id="VY6-cQ-5Id"/>
+                            <outlet property="minLabel" destination="5XZ-8c-boe" id="PWu-Ml-3z1"/>
+                        </connections>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Graph" image="FourBars-sm" id="laK-Xp-d0a"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="bRC-o2-CHa" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1691.25" y="750"/>
+        </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="yl2-sM-qoP">
             <objects>
@@ -328,6 +375,7 @@
                         <segue destination="9pv-A4-QxB" kind="relationship" relationship="viewControllers" id="u7Y-xg-7CH"/>
                         <segue destination="8rJ-Kc-sve" kind="relationship" relationship="viewControllers" id="lzU-1b-eKA"/>
                         <segue destination="N7i-CX-zRg" kind="relationship" relationship="viewControllers" id="Z8J-1N-XdC"/>
+                        <segue destination="oVn-95-0Fr" kind="relationship" relationship="viewControllers" id="nOZ-Re-fdm"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HuB-VB-40B" sceneMemberID="firstResponder"/>
@@ -336,6 +384,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="FourBars-sm" width="44" height="30"/>
         <image name="NoSignal-sm" width="44" height="30"/>
         <image name="first" width="30" height="30"/>
         <image name="second" width="30" height="30"/>

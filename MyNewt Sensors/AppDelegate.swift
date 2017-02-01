@@ -8,6 +8,8 @@
 
 import UIKit
 
+var isGraphing : Bool = false
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegate  {
 
@@ -50,12 +52,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
     
     func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
        print(viewController)
+        if viewController is GraphViewController {
+            isGraphing = true
+        }
         if viewController is ScanController {
             if let newVC = tabBarController.storyboard?.instantiateViewController(withIdentifier: "ScanViewController") {
                 tabBarController.present(newVC, animated: true)
                 return false
             }
         }
+       
         
         return true
     }
